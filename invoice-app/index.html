@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Invoice Dashboard</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+        <!-- Nav Bar -->
+    <nav class="navbar">
+        <a href="index.html">Dashboard</a>
+        <a href="create.html">Create Invoice</a>
+        <a href="history.html">Invoice History</a>
+        <a href="payment-tracker.html">Payment Tracker</a>
+    </nav>
+
+
+<h1>Invoice Management System</h1>
+
+<div class="container">
+
+<div class="summary-box">
+<div class="summary-row">
+<span>Total Invoices</span>
+<span id="totalInvoices">0</span>
+</div>
+
+
+
+<div class="summary-row">
+<span>Total Revenue</span>
+<span id="totalRevenue">0</span>
+</div>
+
+<div class="summary-row">
+<span>Latest Invoice</span>
+<span id="latestInvoice">None</span>
+</div>
+</div>
+
+<h2>Monthly Revenue</h2>
+
+<canvas id="revenueChart" height="100"></canvas>
+
+<br>
+
+<a class="btn" href="create.html">Create Invoice</a>
+<a class="btn" href="history.html">Invoice History</a>
+
+</div>
+
+<script src="js/database.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="js/dashboard.js"></script>
+
+</body>
+
+</html>

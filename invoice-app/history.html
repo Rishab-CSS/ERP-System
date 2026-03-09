@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Invoice History</title>
+<link rel="stylesheet" href="css/style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
+<script src="template/template.js"></script>
+</head>
+
+<body>
+
+        <!-- Nav Bar -->
+    <nav class="navbar">
+        <a href="index.html">Dashboard</a>
+        <a href="create.html">Create Invoice</a>
+        <a href="history.html">Invoice History</a>
+        <a href="payment-tracker.html">Payment Tracker</a>
+    </nav>
+
+
+
+<h1>Invoice History</h1>
+
+<input 
+type="text" 
+id="searchBox" 
+placeholder="Search Invoice, Customer, or Month..."
+style="width:100%; padding:8px; margin-bottom:15px;">
+
+<table id="invoiceTable">
+<thead>
+<tr>
+<th>Invoice No</th>
+<th>Customer</th>
+<th>Date</th>
+<th>Total</th>
+<th>Actions</th>
+</tr>
+</thead>
+
+<tbody></tbody>
+
+</table>
+
+<script src="js/database.js"></script>
+<script src="js/history.js"></script>
+
+</body>
+
+</html>
