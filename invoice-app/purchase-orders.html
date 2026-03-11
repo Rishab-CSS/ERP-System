@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<title>Purchase Orders</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<nav class="navbar">
+<a href="index.html">Dashboard</a>
+<a href="purchase-orders.html">Purchase Orders</a>
+<a href="create.html">Create Invoice</a>
+<a href="history.html">Invoice History</a>
+<a href="payment-tracker.html">Payment Tracker</a>
+<a href="customers.html">Customers</a>
+<a href="#" onclick="logout()">Logout</a>
+</nav>
+
+<div class="container">
+
+<h1>Purchase Orders</h1>
+
+<div style="display:flex; gap:20px; margin-top:20px;">
+
+<button class="btn btn-green"
+onclick="window.location.href='create-po.html'">
+Create Purchase Order </button>
+
+<button class="btn btn-green"
+onclick="window.location.href='view-po.html'">
+View Purchase Orders </button>
+
+</div>
+
+</div>
+
+<script src="js/auth.js"></script>
+
+</body>
+</html>

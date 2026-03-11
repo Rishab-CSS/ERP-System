@@ -186,3 +186,84 @@ font-weight:500;
 .navbar a:hover{
 text-decoration:underline;
 }
+
+#poItems input{
+width:100%;
+padding:6px;
+border:1px solid #e2e8f0;
+border-radius:4px;
+}
+
+#poItems button{
+background:#ef4444;
+color:white;
+border:none;
+padding:5px 8px;
+border-radius:4px;
+cursor:pointer;
+}
+
+#poItems button:hover{
+opacity:0.9;
+}
+
+#poTable th,
+#poTable td{
+border:1px solid #ddd;
+padding:10px;
+text-align:center;
+vertical-align:middle;
+}
+
+#poTable th{
+background:#f0f0f0;
+}
+
+#poTable tr:nth-child(even){
+background:#f9f9f9;
+}
+
+#poTable ul{
+margin:0;
+padding-left:18px;
+}
+
+
+.po-pending{
+color:#b45309;
+font-weight:600;
+}
+
+.po-complete{
+color:#15803d;
+font-weight:600;
+}
+
+#poTable{
+width:100%;
+border-collapse:collapse;
+background:white;
+}
+
+
+.po-part{
+font-weight:600;
+font-size:13px;
+}
+
+
+.po-desc{
+font-size:13px;
+color:#444;
+}
+
+.po-actions{
+display:flex;
+flex-direction:column;
+gap:5px;
+align-items:center;
+}
+
+.po-actions button{
+width:70px;
+}
