@@ -1,0 +1,189 @@
+if(localStorage.getItem("adminLoggedIn") !== "true"){
+window.location.href = "login.html";
+}
+
+
+const tableBody = document.querySelector("#rcTable tbody");
+
+let routeCards = JSON.parse(localStorage.getItem("routeCards")) || [];
+
+function loadRouteCards(){
+
+tableBody.innerHTML = "";
+
+if(routeCards.length === 0){
+
+tableBody.innerHTML = `
+<tr>
+<td colspan="6" style="text-align:center;">No Route Cards Created</td>
+</tr>
+`;
+
+return;
+
+}
+
+routeCards.forEach((rc,index)=>{
+
+let row = document.createElement("tr");
+
+row.innerHTML = `
+
+<td>${rc.rcNo}</td>
+<td>${rc.date || "-"}</td>
+<td>${rc.customer}</td>
+<td>${rc.product}</td>
+<td>${rc.qty}</td>
+
+<td class="rc-actions">
+
+<button class="btn" onclick="viewRC(${index})">View</button>
+
+<button class="btn" onclick="downloadRC(${index})">Download</button>
+
+<button class="btn btn-danger" onclick="deleteRC(${index})">Delete</button>
+
+</td>
+
+`;
+
+tableBody.appendChild(row);
+
+});
+
+}
+
+loadRouteCards();
+
+
+/* VIEW ROUTE CARD */
+
+window.viewRC = function(index){
+
+let routeCards = JSON.parse(localStorage.getItem("routeCards")) || [];
+
+let rc = routeCards[index];
+
+/* store route card for editing */
+
+localStorage.setItem("editRouteCard", JSON.stringify(rc));
+
+/* open route card page */
+
+window.location.href = "create-route-card.html";
+
+};
+
+
+/* DELETE ROUTE CARD */
+
+window.deleteRC = function(index){
+
+if(!confirm("Delete this Route Card?")) return;
+
+routeCards.splice(index,1);
+
+localStorage.setItem("routeCards",JSON.stringify(routeCards));
+
+loadRouteCards();
+
+};
+
+
+/* Downloading Function */
+
+window.downloadRC = async function(index){
+
+let routeCards = JSON.parse(localStorage.getItem("routeCards")) || [];
+
+let rc = routeCards[index];
+
+if(!rc){
+alert("Route Card not found");
+return;
+}
+
+/* Decode template */
+
+const binaryString = window.atob(routeCardTemplate.replace(/\s/g,''));
+
+const len = binaryString.length;
+
+const bytes = new Uint8Array(len);
+
+for(let i=0;i<len;i++){
+bytes[i] = binaryString.charCodeAt(i);
+}
+
+/* Load workbook */
+
+const workbook = new ExcelJS.Workbook();
+
+await workbook.xlsx.load(bytes.buffer);
+
+const sheet = workbook.worksheets[0];
+
+
+function val(cellAddress, value){
+
+const cell = sheet.getCell(cellAddress);
+
+let existing = "";
+
+if(cell.value){
+existing = cell.value.toString();
+}
+
+cell.value = existing + " " + value;
+
+}
+
+/* HEADER DATA */
+
+val("B4", rc.customer);
+val("B5", rc.qty);
+val("B6", rc.partNumber || "");
+val("B7", rc.product);
+val("H5", rc.poNo);
+val("H4", rc.rcNo);
+
+
+/* PROCESS TABLE */
+
+let startRow = 9;
+
+rc.processes.forEach((p,i)=>{
+
+let r = startRow + i;
+
+sheet.getCell(`A${r}`).value = i+1;
+sheet.getCell(`B${r}`).value = p.process;
+sheet.getCell(`C${r}`).value = p.machine;
+sheet.getCell(`D${r}`).value = p.startDate;
+sheet.getCell(`E${r}`).value = p.endDate;
+sheet.getCell(`F${r}`).value = p.producedQty;
+sheet.getCell(`G${r}`).value = p.acceptedQty;
+sheet.getCell(`H${r}`).value = p.reworkQty;
+sheet.getCell(`I${r}`).value = p.rejectedQty;
+sheet.getCell(`J${r}`).value = p.operator;
+
+});
+
+
+/* Download file */
+
+const buffer = await workbook.xlsx.writeBuffer();
+
+const blob = new Blob([buffer],{
+type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+});
+
+const link = document.createElement("a");
+
+link.href = URL.createObjectURL(blob);
+
+link.download = rc.rcNo + ".xlsx";
+
+link.click();
+
+}
