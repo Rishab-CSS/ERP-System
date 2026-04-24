@@ -78,7 +78,7 @@ togglePassword.addEventListener("click", () => {
     footer.innerHTML = `
         <p style="margin: 0;">2026 Copy Rights Reserved</p>
         <p style="margin: 0;">Developed By</p>
-        <p style="margin: 0.2rem 0 0 0; font-weight: 600; color: var(--text-main); font-size: 0.9rem;">Rishab CSS & Imtiyaz Basha</p>
+        <p style="margin: 0.2rem 0 0 0; font-weight: 600; color: var(--text-main); font-size: 0.9rem;">Rishab CSS & Imtiyaz Basha M</p>
     `;
 
     document.body.appendChild(footer);
