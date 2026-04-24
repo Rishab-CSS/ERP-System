@@ -3,83 +3,84 @@
 
 <head>
 <title>Admin Login</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
-.login-box{
-max-width:400px;
-margin:100px auto;
-background:white;
-padding:30px;
-border-radius:10px;
-box-shadow:0 4px 10px rgba(0,0,0,0.1);
+.login-box {
+    max-width: 400px;
+    margin: 80px auto;
+    background: var(--surface);   /* 🔥 FIXED */
+    padding: 30px;
+    border-radius: 8px;
+    border: 1px solid var(--border);  /* 🔥 MATCH THEME */
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
 }
 
-.login-box h2{
-margin-bottom:20px;
-text-align:center;
+.login-box h2 {
+    margin-bottom: 20px;
+    text-align: center;
+    color: var(--text-main);
 }
-
-.login-box input{
-width:100%;
-padding:10px;
-margin-bottom:15px;
-border:1px solid #ccc;
-border-radius:5px;
-}
-
-.login-btn{
-width:100%;
-padding:10px;
-background:#2563eb;
-color:white;
-border:none;
-border-radius:5px;
-cursor:pointer;
-}
-
-.login-btn:hover{
-opacity:0.9;
-}
-
 
 .login-box input {
-  width: 100%;
-  height: 42px; /* FIXED HEIGHT */
-  padding: 10px;
-  margin-bottom: 15px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  box-sizing: border-box;
+    width: 100%;
+    height: 42px;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    background: var(--input-bg);     /* 🔥 DARK INPUT */
+    color: var(--text-main);
+    box-sizing: border-box;
 }
 
+.login-btn {
+    width: 100%;
+    padding: 10px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.login-btn:hover {
+    opacity: 0.9;
+}
+
+/* PASSWORD FIELD */
 .password-container {
-  position: relative;
-  width: 100%;
-  margin-bottom: 15px;
+    position: relative;
+    width: 100%;
+    margin-bottom: 15px;
 }
 
 .password-container input {
-  padding-right: 45px; /* space for icon */
-  margin-bottom: 0; /* IMPORTANT */
+    padding-right: 45px;
+    margin-bottom: 0;
 }
 
 .password-container span {
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  height: 100%;
-  display: flex;
-  align-items: center; /* PERFECT vertical alignment */
-  cursor: pointer;
-  font-size: 18px;
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 100%;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 18px;
 }
+
+
+
+
 
 </style>
 </head>
 
-<body class="no-scroll">
+<body >
 
 <div class="login-box">
 

@@ -149,6 +149,8 @@ if (currentFilter === "Paid" && status !== "Paid") return;
   // ================= KPI UPDATE =================
   document.getElementById("totalPending").innerText = `₹${formatCurrency(totalPending)}`;
   document.getElementById("totalPaid").innerText = `₹${formatCurrency(totalPaid)}`;
+
+  applyEmptyState();
 }
 
 async function loadPayments() {

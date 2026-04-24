@@ -159,13 +159,8 @@ body.dark .popup-content {
 
 /* RESPONSIVE ANALYTICS */
 
-@media screen and (max-width: 1024px) {
-  .kpi-container {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
+@media (max-width: 768px) {
 
-@media screen and (max-width: 768px) {
   .kpi-container {
     grid-template-columns: 1fr;
   }
@@ -194,4 +189,59 @@ body.dark .popup-content {
   .chart-wrapper {
     height: 250px;
   }
+
+  /* 🔥 TOP BAR FIX */
+  .top-bar {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+  }
+
+  .controls {
+    display: flex;
+    flex-content: flex-end;
+    gap: 10px;
+  }
+
+.controls button {
+  width: 100%;
+}
+
+/* 🔥 Keep dropdown compact */
+.controls select {
+  width: auto;
+}
+
+}
+
+@media (max-width: 480px) {
+
+  .kpi-card {
+    padding: 12px;
+  }
+
+  .kpi-card p {
+    font-size: 1.1rem;
+  }
+
+  .chart-wrapper {
+    height: 220px;
+  }
+
+}
+
+.controls select,
+.controls button {
+  min-height: 40px;
+}
+
+
+.kpi-card,
+.chart-box {
+  transition: transform 0.2s ease;
+}
+
+/* 🔥 FIX: Make chart dropdown compact */
+.chart-filter {
+  width: auto !important;
 }

@@ -38,6 +38,7 @@ fetch("https://erp-system-303n.onrender.com/api/invoices")
 
     });
 
+    applyEmptyState();
   })
   .catch(err => console.error(err));
 

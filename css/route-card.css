@@ -331,3 +331,68 @@ border-radius:6px;
 #rcTable .btn {
     font-weight: 700;
 }
+
+
+/* =========================
+   📱 ROUTE CARD RESPONSIVE
+========================= */
+
+@media (max-width: 768px) {
+
+    h1 {
+        font-size: 18px;
+    }
+
+    /* 🔥 FORM STACK */
+    .grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .form-group input,
+    .form-group select {
+        min-height: 44px;
+        font-size: 13px;
+    }
+
+
+    table th,
+    table td {
+        font-size: 12px;
+        padding: 6px;
+    }
+
+    /* 🔥 BUTTON FULL WIDTH (SAVE BUTTON ETC) */
+    .btn {
+        width: 100%;
+        padding: 10px;
+    }
+
+    /* 🔥 ACTION BUTTONS STACK */
+    .rc-actions {
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .rc-actions .btn,
+    .rc-actions .btn-danger {
+        width: 100%;
+    }
+
+}
+
+
+/* 📱 SMALL DEVICES */
+@media (max-width: 480px) {
+
+    h1 {
+        font-size: 16px;
+    }
+
+    table th,
+    table td {
+        font-size: 11px;
+        padding: 5px;
+    }
+
+}

@@ -33,6 +33,8 @@ async function loadEmployees() {
     `;
 });
 
+    applyEmptyState();
+
 }
 
 // ➤ Add Employee

@@ -92,3 +92,69 @@ h2 {
     margin: auto;
     padding: 20px;
 }
+
+
+/* =========================
+   📱 CUSTOMER RESPONSIVE
+========================= */
+
+@media (max-width: 768px) {
+
+    .page-container {
+        padding: 10px;
+    }
+
+    .customer-form {
+        max-width: 100%;
+        padding: 15px;
+    }
+
+    .customer-form input,
+    .customer-form textarea {
+        font-size: 13px;
+        padding: 8px;
+    }
+
+    .customer-form button {
+        width: 100%;
+        padding: 12px;
+    }
+
+    /* 🔥 TABLE FIX */
+    #customerTable {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    #customerTable th,
+    #customerTable td {
+        font-size: 12px;
+        padding: 8px;
+    }
+
+}
+
+/* 📱 SMALL DEVICES */
+@media (max-width: 480px) {
+
+    h2 {
+        font-size: 18px;
+    }
+
+    .customer-form {
+        padding: 12px;
+    }
+
+    .customer-form input,
+    .customer-form textarea {
+        font-size: 12px;
+    }
+
+    #customerTable th,
+    #customerTable td {
+        font-size: 11px;
+        padding: 6px;
+    }
+
+}

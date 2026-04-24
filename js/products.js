@@ -30,6 +30,8 @@ async function loadProducts(){
         </tr>
         `;
     });
+
+    applyEmptyState();
 }
 
 // =======================

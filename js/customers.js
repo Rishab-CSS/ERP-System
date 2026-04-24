@@ -35,6 +35,8 @@ customers.forEach((cust) => {
     `;
 });
 
+applyEmptyState();
+
 }
 
 // Add / Update Customer

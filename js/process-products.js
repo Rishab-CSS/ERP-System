@@ -81,6 +81,8 @@ if (data && data.processes && data.processes.length > 0) {
         </tr>
         `;
     }
+
+    applyEmptyState();
 }
 
 // =======================

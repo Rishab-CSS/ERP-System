@@ -36,6 +36,8 @@ table.appendChild(row);
 
 });
 
+applyEmptyState();
+
 } catch (err) {
 console.error(err);
 alert("Error loading invoices");

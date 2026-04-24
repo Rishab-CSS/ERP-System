@@ -125,6 +125,8 @@ document.getElementById("totalPending").innerText = formatMoney(totalPending);
 document.getElementById("totalReceived").innerText = formatMoney(totalReceived);
 document.getElementById("totalOverdue").innerText = formatMoney(totalOverdue);
 
+applyEmptyState();
+
 }
 
 

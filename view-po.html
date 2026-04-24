@@ -4,6 +4,7 @@
 
     <head>
     <title>Purchase Orders</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/style.css">
     </head>
 
@@ -14,7 +15,7 @@
 
     <h1>Purchase Orders</h1>
 
-    <div style="margin-bottom:15px;">
+    <div style="margin-bottom:15px;" class="filter-buttons">
     <button onclick="filterPO('all')">All</button>
     <button onclick="filterPO('pending')">Pending</button>
     <button onclick="filterPO('completed')">Completed</button>
@@ -45,6 +46,7 @@
     </table>
 
     <script src="js/navbar.js"></script>
+    <script src="js/common.js"></script>
     <script src="js/view-po.js"></script>
     <script src="js/auth.js"></script>
 

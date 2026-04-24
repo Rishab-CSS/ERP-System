@@ -131,6 +131,8 @@ row.addEventListener("mouseleave", () => {
 
     });
 
+    applyEmptyState();
+
 }
 
 // =========================
