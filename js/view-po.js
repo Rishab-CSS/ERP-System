@@ -5,6 +5,7 @@ if(!role){
 }
 
 const tbody = document.querySelector("#poTable tbody");
+const searchBox = document.getElementById("searchBox");
 
 // =========================
 // DATE FORMAT
@@ -172,3 +173,39 @@ function editPO(po){
     // ✅ Redirect clean (NO ?edit=)
     window.location.href = "create-po.html";
 }
+
+
+
+searchBox.addEventListener("input", function(){
+
+    let search = searchBox.value.toLowerCase();
+
+    let allRows = tbody.querySelectorAll("tr");
+
+    // Step 1: Group rows by PO
+    let groups = {};
+
+    allRows.forEach(row => {
+        let className = [...row.classList].find(c => c.startsWith("po-group-"));
+
+        if(!groups[className]){
+            groups[className] = [];
+        }
+
+        groups[className].push(row);
+    });
+
+    // Step 2: Check each group
+    Object.values(groups).forEach(groupRows => {
+
+        let groupText = groupRows.map(r => r.innerText.toLowerCase()).join(" ");
+
+        let match = groupText.includes(search);
+
+        groupRows.forEach(r => {
+            r.style.display = match ? "" : "none";
+        });
+
+    });
+
+});

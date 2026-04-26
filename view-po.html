@@ -15,12 +15,16 @@
 
     <h1>Purchase Orders</h1>
 
+    <input type="text" id="searchBox" placeholder="Search PO, Customer, Item..." style="width:100%; padding:8px; margin-bottom:15px;">
+
+
     <div style="margin-bottom:15px;" class="filter-buttons">
     <button onclick="filterPO('all')">All</button>
     <button onclick="filterPO('pending')">Pending</button>
     <button onclick="filterPO('completed')">Completed</button>
     </div>
 
+    <div class="table-container">
     <table id="poTable">
 
     <thead>
@@ -44,6 +48,7 @@
     </tbody>
 
     </table>
+</div>
 
     <script src="js/navbar.js"></script>
     <script src="js/common.js"></script>

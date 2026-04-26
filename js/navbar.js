@@ -32,6 +32,11 @@ document.addEventListener("click", function (e) {
     const link = e.target.closest("a");
     const item = e.target.closest(".nav-item, .dropdown-submenu");
 
+    // ✅ Allow logout BEFORE anything blocks it
+    if (link && link.id === "navLogout") {
+        return;
+    }
+
     // Click outside → close all
     if (!item) {
         document.querySelectorAll(".nav-item, .dropdown-submenu").forEach(el => {
@@ -40,7 +45,7 @@ document.addEventListener("click", function (e) {
         return;
     }
 
-    // 🔥 STOP OTHER SCRIPTS FROM BREAKING NAVBAR
+    // 🔥 NOW block other handlers
     e.stopImmediatePropagation();
 
     // FINAL LINK → allow navigation
@@ -54,4 +59,4 @@ document.addEventListener("click", function (e) {
         link.parentElement.classList.toggle("active");
     }
 
-}, true);  // 🔥 CAPTURE PHASE (VERY IMPORTANT)
+}, true);
