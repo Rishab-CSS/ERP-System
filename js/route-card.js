@@ -469,6 +469,7 @@ async function init(){
         editId = editData._id;
 
         document.getElementById("rcNo").value = editData.rcNo;
+        document.getElementById("rcinvoiceNo").value = editData.invoiceNo || "";
         document.getElementById("rcCustomer").value = editData.customer;
         document.getElementById("rcProduct").value = editData.product;
         document.getElementById("productId").value = editData.productId || ""; // 🔥 FIX

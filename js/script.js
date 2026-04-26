@@ -61,11 +61,15 @@ try {
 
 
 // 🔥 INIT SELECT2 AFTER DATA LOAD
-
+// 🔥 INIT SELECT2
+$('#poSelect').select2({
+    width: '100%'
+});
 
 // 🔥 SINGLE EVENT BIND
-$('#poSelect').off('change').on('change', loadPOItems);
-
+$('#poSelect').on('select2:select select2:clear', function () {
+    loadPOItems();
+});
 
 
     // Add first item row
@@ -126,6 +130,8 @@ if(editing.poNo){
     options.forEach(opt => {
         if(opt.dataset.pono === editing.poNo){
 $('#poSelect').val(opt.value).trigger('change');
+
+loadPOItems();
 
 // 🔥 WAIT FOR PO LOAD THEN SET GST
 setTimeout(() => {
@@ -286,6 +292,12 @@ return;
 let res = await fetch(`https://erp-system-303n.onrender.com/api/purchase-orders/${id}`);
 let po = await res.json();
 
+// 🔥 GET EXISTING INVOICE ITEMS
+let existingParts = Array.from(
+    document.querySelectorAll("#itemsBody .inp-part")
+).map(inp => inp.value.trim());
+
+
 // fill PO fields
 document.querySelector('[name="poDate"]').value = formatDateForInput(po.poDate);
 
@@ -305,12 +317,21 @@ tbody.innerHTML = "";
 // load items
 po.items.forEach(item => {
 
-if(item.pendingQty <= 0) return;
 
 let row = document.createElement("tr");
 
+// 🔥 CHECK IF ITEM ALREADY EXISTS IN INVOICE
+let isChecked = existingParts.includes(item.part);
+
+// 🔥 CHECK CONDITIONS
+let isCompleted = item.pendingQty <= 0;
+let isDisabled = isCompleted ? "disabled" : "";
+let isCheckedFinal = isChecked ? "checked" : "";
+
 row.innerHTML = `
-<td><input type="checkbox" class="po-check"></td>
+<td>
+    <input type="checkbox" class="po-check" ${isCheckedFinal} ${isDisabled}>
+</td>
 <td>${item.part}</td>
 <td>${item.partNo}</td>
 <td>${item.hsn}</td>
@@ -332,8 +353,10 @@ tbody.appendChild(row);
 // Add Selected Items Of PO
 function addSelectedPOItems(){
 
-// CLEAR EXISTING ROWS
-itemsBody.innerHTML = "";
+// 🔥 GET EXISTING ITEMS IN INVOICE
+let existingParts = Array.from(
+    document.querySelectorAll("#itemsBody .inp-part")
+).map(inp => inp.value.trim());
 
 let rows = document.querySelectorAll("#poItemTable tbody tr");
 
@@ -343,9 +366,26 @@ let checked = row.querySelector(".po-check").checked;
 
 if(!checked) return;
 
-addItem();
+let partName = row.children[1].innerText;
 
-let invoiceRow = itemsBody.lastElementChild;
+// ❌ If already exists → show alert and skip
+if(existingParts.includes(partName)){
+    alert(partName + " is already added!");
+    return;
+}
+
+let invoiceRow;
+
+// 🔥 If first row is empty → use it
+let firstRow = itemsBody.children[0];
+let firstPart = firstRow?.querySelector(".inp-part")?.value.trim();
+
+if(itemsBody.children.length === 1 && !firstPart){
+    invoiceRow = firstRow;
+}else{
+    addItem();
+    invoiceRow = itemsBody.lastElementChild;
+}
 
 invoiceRow.querySelector(".inp-part").value =
 row.children[1].innerText;

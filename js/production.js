@@ -68,8 +68,10 @@ async function createProduction() {
 
   if (!productName || !qty) {
     alert("Enter product name and qty");
+    btn.disabled = false;
+    btn.innerText = "Save";
     return;
-  }
+}
 
   const product = await getOrCreateProduct(productName);
 
@@ -254,7 +256,7 @@ async function saveProcess() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          processId,
+          processId: row.dataset.id || null,
           processName,
           producedQty: produced,
           acceptedQty: accepted,

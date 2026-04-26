@@ -245,3 +245,17 @@ body.dark .popup-content {
 .chart-filter {
   width: auto !important;
 }
+
+
+
+/* 🔥 FULL WIDTH KPI */
+.kpi-wide {
+  margin-top: 20px;
+}
+
+.kpi-card.wide {
+  width: 100%;
+  border-radius: 12px;
+  background: linear-gradient(90deg, #30C5D2, #471069);
+  margin-bottom: 30px;
+}

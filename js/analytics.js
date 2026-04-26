@@ -97,6 +97,13 @@ function renderKPIs() {
   let filteredPurchaseInvoices = filterPurchaseInvoicesByMonth(purchaseInvoices, selectedMonth);
 
   let totalRevenue = filteredInvoices.reduce((s, i) => s + (i.amount || 0), 0);
+
+
+
+
+
+
+  
   let paymentsReceived = filteredPayments.filter(p => p.type?.toLowerCase() === "incoming").reduce((s, p) => s + (p.amount || 0), 0);
   
   let pendingIncoming = 0;
@@ -128,6 +135,25 @@ function renderKPIs() {
     manualGroups[key].total = Math.max(manualGroups[key].total, Number(p.totalAmount || 0));
     manualGroups[key].paid += Number(p.amount || 0);
   });
+
+
+  // 🔥 PURCHASE TOTAL
+let purchaseTotal = filteredPurchaseInvoices.reduce(
+  (s, inv) => s + Number(inv.grandTotal || 0),
+  0
+);
+
+// 🔥 MANUAL TOTAL
+let manualTotal = Object.values(manualGroups).reduce(
+  (s, g) => s + g.total,
+  0
+);
+
+// 🔥 FINAL EXPENDITURE
+let totalExpenditure = purchaseTotal + manualTotal;
+
+
+
   Object.values(manualGroups).forEach(group => {
     let rem = group.total - group.paid;
     if (rem > 0) pendingOutgoing += rem;
@@ -209,6 +235,7 @@ else {
   }
 
   document.getElementById("totalRevenue").innerText = "₹" + totalRevenue.toLocaleString();
+  document.getElementById("totalExpenditure").innerText ="₹" + totalExpenditure.toLocaleString();
   document.getElementById("paymentsReceived").innerText = "₹" + paymentsReceived.toLocaleString();
   document.getElementById("pendingIncoming").innerText = "₹" + pendingIncoming.toLocaleString();
   document.getElementById("paymentsMade").innerText = "₹" + paymentsMade.toLocaleString();
@@ -227,57 +254,169 @@ function resetChartCanvas(id) {
 
 // ================= REVENUE CHART =================
 function renderRevenueChart() {
+
   let filteredInvoices = filterInvoicesByMonth(invoices, revenueMonth);
+  let filteredPayments = filterPaymentsByMonth(payments, revenueMonth);
+  let filteredPurchaseInvoices = filterPurchaseInvoicesByMonth(purchaseInvoices, revenueMonth);
+
   let monthlySales = {};
+  let monthlyExpense = {};
+
+  // 🔥 REVENUE (Sales)
   filteredInvoices.forEach(inv => {
     let d = new Date(inv.invoiceDate);
     let key = `${d.getFullYear()}-${d.getMonth()}`;
     monthlySales[key] = (monthlySales[key] || 0) + (inv.amount || 0);
   });
-  let months = Object.keys(monthlySales).sort();
+
+  // 🔥 PURCHASE EXPENSE
+  filteredPurchaseInvoices.forEach(inv => {
+    let d = new Date(inv.invoiceDate);
+    let key = `${d.getFullYear()}-${d.getMonth()}`;
+    monthlyExpense[key] = (monthlyExpense[key] || 0) + Number(inv.grandTotal || 0);
+  });
+
+  // 🔥 MANUAL EXPENSE (GROUPED)
+  let manualPayments = filteredPayments.filter(p => p.isManual);
+  let manualGroups = {};
+
+  manualPayments.forEach(p => {
+    let key = p.manualGroupId || p._id;
+
+    if (!manualGroups[key]) {
+      manualGroups[key] = { total: 0, date: p.paymentDate };
+    }
+
+    manualGroups[key].total = Math.max(
+      manualGroups[key].total,
+      Number(p.totalAmount || 0)
+    );
+  });
+
+  // Add grouped manual payments to monthly expense
+  Object.values(manualGroups).forEach(group => {
+    let d = new Date(group.date);
+    let key = `${d.getFullYear()}-${d.getMonth()}`;
+    monthlyExpense[key] = (monthlyExpense[key] || 0) + group.total;
+  });
+
+  // 🔥 MERGE MONTHS
+  let months = Array.from(new Set([
+    ...Object.keys(monthlySales),
+    ...Object.keys(monthlyExpense)
+  ])).sort();
+
   let revenueLabels = months.map(m => {
     let [year, month] = m.split("-");
-    return new Date(year, month).toLocaleString("default", { month: "short", year: "numeric" });
+    return new Date(year, month).toLocaleString("default", {
+      month: "short",
+      year: "numeric"
+    });
   });
-  let revenueData = months.map(m => monthlySales[m]);
+
+  let revenueData = months.map(m => monthlySales[m] || 0);
+  let expenseData = months.map(m => monthlyExpense[m] || 0);
 
   resetChartCanvas("revenueChart");
+
   new Chart(document.getElementById("revenueChart"), {
     type: "line",
     data: {
       labels: revenueLabels,
-      datasets: [{
-        label: "Revenue",
-        data: revenueData,
-        borderColor: "#00f2fe",
-        backgroundColor: (context) => {
-          const chart = context.chart;
-          const {ctx, chartArea} = chart;
-          if (!chartArea) return;
-          const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
-          gradient.addColorStop(0, "rgba(0, 242, 254, 0.6)");
-          gradient.addColorStop(1, "rgba(79, 172, 254, 0.05)");
-          return gradient;
+      datasets: [
+        {
+          label: "Revenue",
+          data: revenueData,
+          borderColor: "#00f2fe",
+          backgroundColor: (context) => {
+            const chart = context.chart;
+            const {ctx, chartArea} = chart;
+            if (!chartArea) return;
+            const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+            gradient.addColorStop(0, "rgba(0, 242, 254, 0.6)");
+            gradient.addColorStop(1, "rgba(79, 172, 254, 0.05)");
+            return gradient;
+          },
+          fill: true,
+          tension: 0.5,
+          pointRadius: 5,
+          pointBackgroundColor: "#fff",
+          pointBorderColor: "#00f2fe",
+          pointBorderWidth: 2,
+          borderWidth: 4
         },
-        fill: true, tension: 0.5, pointRadius: 5, pointBackgroundColor: "#fff",
-        pointBorderColor: "#00f2fe", pointBorderWidth: 2, pointHoverRadius: 8, borderWidth: 4
-      }]
+        {
+          label: "Expenditure",
+          data: expenseData,
+          borderColor: "#ff0844",
+          backgroundColor: (context) => {
+            const chart = context.chart;
+            const {ctx, chartArea} = chart;
+            if (!chartArea) return;
+            const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+            gradient.addColorStop(0, "rgba(255, 8, 68, 0.5)");
+            gradient.addColorStop(1, "rgba(255, 177, 153, 0.05)");
+            return gradient;
+          },
+          fill: true,
+          tension: 0.5,
+          pointRadius: 5,
+          pointBackgroundColor: "#fff",
+          pointBorderColor: "#ff0844",
+          pointBorderWidth: 2,
+          borderWidth: 4
+        }
+      ]
     },
     options: {
-      responsive: true, maintainAspectRatio: false,
+      responsive: true,
+      maintainAspectRatio: false,
       interaction: { mode: 'index', intersect: false },
       scales: {
-        x: { grid: { display: false }, ticks: { font: { family: "'Inter', sans-serif", weight: "500" } } },
-        y: { grid: { borderDash: [5, 5] }, ticks: { font: { family: "'Inter', sans-serif" }, beginAtZero: true } }
+        x: {
+          grid: { display: false },
+          ticks: {
+            font: { family: "'Inter', sans-serif", weight: "500" }
+          }
+        },
+        y: {
+          grid: { borderDash: [5, 5] },
+          ticks: {
+            font: { family: "'Inter', sans-serif" },
+            callback: value => "₹" + value
+          },
+          beginAtZero: true
+        }
       },
       plugins: {
-        legend: { display: false },
-        tooltip: { backgroundColor: "rgba(0,0,0,0.8)", titleFont: { size: 14, family: "'Inter', sans-serif" }, bodyFont: { size: 14, weight: "bold", family: "'Inter', sans-serif" }, padding: 12, cornerRadius: 8, displayColors: false },
+legend: { 
+  position: "top", 
+  labels: { 
+    font: { 
+      family: "'Inter', sans-serif", 
+      size: 12, 
+      weight: "500" 
+    }, 
+    usePointStyle: true,      // 🔥 important
+    pointStyle: "circle",     // 🔥 same as others
+    padding: 15              // 🔥 spacing like production chart
+  }
+},
+
+        tooltip: {
+          backgroundColor: "rgba(0,0,0,0.8)",
+          titleFont: { size: 14, family: "'Inter', sans-serif" },
+          bodyFont: { size: 14, weight: "bold", family: "'Inter', sans-serif" },
+          padding: 12,
+          cornerRadius: 8
+        },
         datalabels: { display: false }
       }
     }
   });
 }
+
+
 
 // ================= PAYMENT CHART =================
 function renderPaymentChart() {
