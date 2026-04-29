@@ -114,7 +114,7 @@ input[type="password"],
 input[type="email"],
 select,
 textarea,
-td input,
+td input:not([type="checkbox"]),
 .modal-box input,
 .modal-box select {
     width: 100%;
@@ -469,12 +469,12 @@ table tr:hover {
 }
 
 #poItemTable td input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
+    width: 20px;
+    height: 20px;
     padding: 0;
-    margin: 0 auto;
+    margin: auto;
     display: block;
-    accent-color: var(--primary);
+    cursor: pointer;
 }
 
 #poItemTable td input,
