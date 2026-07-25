@@ -53,8 +53,16 @@ function addPOItem(item = {}){
         <td><input class="part" value="${item.part || ""}"></td>
         <td><input class="partNo" value="${item.partNo || ""}"></td>
         <td><input class="hsn" value="${item.hsn || ""}"></td>
-        <td><input type="number" class="qty" value="${item.orderedQty || ""}"></td>
-        <td><input type="number" class="rate" value="${item.rate || ""}"></td>
+<td><input type="number" class="qty" value="${item.orderedQty || ""}"></td>
+
+<td>
+    <input
+        type="number"
+        class="pendingQty"
+        value="${item.pendingQty ?? item.orderedQty ?? ""}">
+</td>
+
+<td><input type="number" class="rate" value="${item.rate || ""}"></td>
         <td><button type="button" onclick="removePOItem(this)" class="btn btn-danger">X</button></td>
     `;
 
@@ -107,6 +115,8 @@ function loadPOForEdit(){
     editData.items.forEach(item => {
         addPOItem(item);
     });
+
+    localStorage.removeItem("editPO");
 }
 
 // =========================
@@ -119,6 +129,9 @@ async function init(){
 
 init();
 
+// =========================
+// SAVE FUNCTION
+// =========================
 // =========================
 // SAVE FUNCTION
 // =========================
@@ -136,72 +149,114 @@ async function savePO(){
     let rows = document.querySelectorAll("#poItems tr");
     let items = [];
 
+    // Check if editing an existing PO
+let editingPOId = localStorage.getItem("editPOId");
+
+
     for(let row of rows){
 
         let qtyInput = row.querySelector(".qty");
 
-        // ✅ FIXED: Properly get orderedQty
         let orderedQty = Number(qtyInput.value);
 
-        let oldPending = Number(qtyInput.dataset.pending || 0);
-        let oldOrdered = Number(qtyInput.dataset.oldordered || 0);
+        let pendingQty;
 
-        // Calculate used qty
-        let usedQty = oldOrdered - oldPending;
+        // Existing PO
+        if(editingPO){
 
-        if(usedQty < 0) usedQty = 0;
+            pendingQty = Number(
+                row.querySelector(".pendingQty").value
+            );
 
-        // Prevent invalid edit
-        if(orderedQty < usedQty){
-            alert("Cannot reduce below already used quantity!");
-            return;
+            let oldPending = Number(qtyInput.dataset.pending || 0);
+            let oldOrdered = Number(qtyInput.dataset.oldordered || 0);
+
+            let usedQty = oldOrdered - oldPending;
+
+            if(usedQty < 0){
+                usedQty = 0;
+            }
+
+            if(pendingQty > orderedQty){
+                alert("Pending Quantity cannot be greater than Ordered Quantity.");
+                return;
+            }
+
+            if((orderedQty - pendingQty) < usedQty){
+                alert("Already supplied quantity cannot be modified.");
+                return;
+            }
+
+        }
+        // New PO
+        else{
+
+            pendingQty = orderedQty;
+
         }
 
-        // Calculate new pending safely
-        let newPending = orderedQty - usedQty;
-
-        if(newPending < 0) newPending = 0;
-
         items.push({
+
             part: row.querySelector(".part").value,
             partNo: row.querySelector(".partNo").value,
             hsn: row.querySelector(".hsn").value,
-            orderedQty,
-            pendingQty: newPending,
+            orderedQty: orderedQty,
+            pendingQty: pendingQty,
             rate: Number(row.querySelector(".rate").value)
+
         });
+
     }
 
-    let editingPO = JSON.parse(localStorage.getItem("editPO"));
+    if(editingPOId){
 
-    if(editingPO){
         // UPDATE
         await fetch(`https://erp-system-303n.onrender.com/api/purchase-orders/${editingPO._id}`, {
+
             method: "PUT",
-            headers: { "Content-Type": "application/json" },
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
             body: JSON.stringify({
+
                 poNo,
                 customer,
                 poDate,
                 items
+
             })
+
         });
+
     }
     else{
+
         // CREATE
         await fetch("https://erp-system-303n.onrender.com/api/purchase-orders", {
+
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
             body: JSON.stringify({
+
                 poNo,
                 customer,
                 poDate,
                 items
+
             })
+
         });
+
     }
 
-    localStorage.removeItem("editPO");
+    localStorage.removeItem("editPOId");
 
     window.location.href = "view-po.html";
+
 }

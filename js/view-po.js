@@ -165,7 +165,10 @@ async function deletePO(id){
 function editPO(po){
 
     // ✅ Store full PO object
-    localStorage.setItem("editPO", JSON.stringify(po));
+localStorage.setItem("editPO", JSON.stringify(po));
+localStorage.setItem("editPOId", po._id);
+
+window.location.href = "create-po.html";
 
     // ✅ DEBUG (you can remove later)
     console.log("Editing PO:", po);
