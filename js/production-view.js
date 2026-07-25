@@ -85,18 +85,19 @@ data.forEach(prod => {
       <td>
         <button onclick="openProduction('${prod._id}')">Open</button>
 ${
-  existingRC
+existingRC
     ? `<button class="btn btn-green" disabled>
           Route Card Created: ${existingRC.rcNo}
        </button>`
-    : `<button 
+    : `<button
           ${statusText !== "Completed" ? "class=\"paid-button\" disabled" : ""}
           onclick="createRouteCard('${prod._id}', '${prod.productName}', '${prod.totalQty}')"
        >
-          Create Route Card
+          Create Route Card (${prod.routeCardNo})
        </button>`
+
 }
-        <button onclick="deleteProduction('${prod._id}')">Delete</button>
+        <button onclick="deleteProduction('${prod._id}', '${prod.routeCardNo}')">Delete</button>
       </td>
     </tr>
   `;
@@ -118,17 +119,34 @@ function openProduction(id) {
 }
 
 
-async function deleteProduction(id) {
+async function deleteProduction(id, routeCardNo) {
+
+  console.log(id, routeCardNo);
 
   if (!confirm("Delete this production?")) return;
 
-  await fetch(API_URL + "/" + id, {
-    method: "DELETE"
-  });
+  let cancelRouteCard = false;
+
+  if (routeCardNo) {
+    cancelRouteCard = confirm(
+      `A Route Card Number ${routeCardNo} has been reserved.\n\nDo you want to cancel this Route Card Number?`
+    );
+  }
+
+  const res = await fetch(
+    `${API_URL}/${id}?cancelRouteCard=${cancelRouteCard}`,
+    {
+      method: "DELETE"
+    }
+  );
+
+  if (!res.ok) {
+    alert("Failed to delete production.");
+    return;
+  }
 
   alert("Deleted!");
-
-  loadProductions(); // refresh table
+  loadProductions();
 }
 
 

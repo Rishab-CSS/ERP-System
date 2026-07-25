@@ -2,24 +2,62 @@ const express = require("express");
 const router = express.Router();
 const Production = require("../models/ProductionTracking");
 const ProductProcess = require("../models/ProductProcess");
+const RouteCardSequence = require("../models/RouteCardSequence");
+
+
+
+// =========================
+// GENERATE NEXT ROUTE CARD NUMBER
+// =========================
+async function generateNextRouteCardNo() {
+
+  const latest = await RouteCardSequence.findOne().sort({ createdAt: -1 });
+
+  if (!latest) {
+    return "RPIC/RC/01";
+  }
+
+  const currentNo = parseInt(latest.routeCardNo.split("/")[2]);
+
+  return "RPIC/RC/" + String(currentNo + 1).padStart(2, "0");
+}
 
 // =========================
 // CREATE PRODUCT
 // =========================
 router.post("/create", async (req, res) => {
   try {
-    const data = new Production({
-      ...req.body,
-      productId: req.body.productId
-    });
 
-    await data.save();
-    res.json(data);
+  console.log("Step 1");
 
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  const rcNo = await generateNextRouteCardNo();
+  console.log("Generated RC:", rcNo);
+
+  const data = new Production({
+    ...req.body,
+    productId: req.body.productId,
+    routeCardNo: rcNo
+  });
+
+  await data.save();
+  console.log("Production saved");
+
+  await RouteCardSequence.create({
+    routeCardNo: rcNo,
+    productionId: data._id,
+    status: "Reserved"
+  });
+
+  console.log("RouteCardSequence saved");
+
+  res.json(data);
+
+} catch (err) {
+  console.error("ERROR:", err);
+  res.status(500).json({ error: err.message });
+}
 });
+
 
 // =========================
 // GET ALL
@@ -274,15 +312,29 @@ router.post("/dispatch/:id", async (req, res) => {
 // =========================
 router.delete("/:id", async (req, res) => {
   try {
-    const deleted = await Production.findByIdAndDelete(req.params.id);
+    const { cancelRouteCard } = req.query;
 
-    if (!deleted) {
-      return res.status(404).json({ message: "Not found" });
+    const production = await Production.findById(req.params.id);
+
+    if (!production) {
+      return res.status(404).json({ message: "Production not found" });
     }
 
-    res.json({ message: "Deleted successfully" });
+    if (cancelRouteCard === "true") {
+      await RouteCardSequence.findOneAndUpdate(
+        { productionId: production._id },
+        { status: "Cancelled" }
+      );
+    }
+
+    await Production.findByIdAndDelete(req.params.id);
+
+    res.json({
+      message: "Production deleted successfully"
+    });
 
   } catch (err) {
+    console.error(err);
     res.status(500).json({ error: err.message });
   }
 });
