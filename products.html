@@ -27,7 +27,7 @@
 
 #productTable th,
 #productTable td {
-    width: 50%;            /* 2 columns → split equally */
+    width: 33.33%;            /* 2 columns → split equally */
     text-align: center;
 }
 
@@ -45,8 +45,13 @@
 
 <!-- ADD PRODUCT -->
 <div class="form-group">
-    <label>Product Name</label>
-    <input type="text" id="productName">
+    <label>Part Number</label>
+    <input type="text" id="partNumber">
+</div>
+<br>
+<div class="form-group">
+    <label>Part Name</label>
+    <input type="text" id="partName">
 </div>
 
 <br>
@@ -61,7 +66,8 @@
 <table>
 <thead>
 <tr>
-    <th>Product Name</th>
+    <th>Part Number</th>
+    <th>Part Name</th>
     <th>Actions</th>
 </tr>
 </thead>

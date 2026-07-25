@@ -4,7 +4,7 @@ if(!role){
   window.location.href = "login.html";
 }
 
-const API = "https://erp-system-303n.onrender.com/api/products";
+const API = "http://localhost:3000/api/products";
 
 let editId = null;
 
@@ -36,7 +36,8 @@ async function loadProducts() {
         const row = document.createElement("tr");
 
         row.innerHTML = `
-            <td>${p.name}</td>
+<td>${p.partNumber}</td>
+<td>${p.partName}</td>
             <td>
                 <div class="action-buttons">
                     <button onclick="editProduct('${p._id}')">Edit</button>
@@ -55,19 +56,23 @@ async function loadProducts() {
 
 async function saveProduct(){
 
-    const name = document.getElementById("productName").value.trim();
+const partNumber = document.getElementById("partNumber").value.trim();
+const partName = document.getElementById("partName").value.trim();
 
-    if(!name){
-        alert("Enter product name");
-        return;
-    }
+if (!partNumber || !partName) {
+    alert("Enter Part Number and Part Name");
+    return;
+}
 
     if(editId){
         // UPDATE
         await fetch(`${API}/${editId}`,{
             method:"PUT",
             headers:{"Content-Type":"application/json"},
-            body: JSON.stringify({ name })
+  body: JSON.stringify({
+    partNumber,
+    partName
+})
         });
 
         editId = null;
@@ -77,11 +82,15 @@ async function saveProduct(){
         await fetch(`${API}/add`,{
             method:"POST",
             headers:{"Content-Type":"application/json"},
-            body: JSON.stringify({ name })
+body: JSON.stringify({
+    partNumber,
+    partName
+})
         });
     }
 
-    document.getElementById("productName").value = "";
+document.getElementById("partNumber").value = "";
+document.getElementById("partName").value = "";
 
     loadProducts();
 }
@@ -97,7 +106,8 @@ async function editProduct(id){
 
     const product = data.find(p => p._id === id);
 
-    document.getElementById("productName").value = product.name;
+document.getElementById("partNumber").value = product.partNumber;
+document.getElementById("partName").value = product.partName;
 
     editId = id;
 }
