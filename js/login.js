@@ -15,17 +15,22 @@ async function login() {
 
         const data = await res.json();
 
-        if (data.success) {
+if (data.success) {
 
-            localStorage.setItem("role", data.role);
+    localStorage.setItem("user", JSON.stringify(data.user));
 
-            window.location.href = "index.html";
+    localStorage.setItem(
+        "role",
+        data.user.role.roleName.toLowerCase()
+    );
 
-        } else {
+    window.location.href = "index.html";
 
-            document.getElementById("error").style.display = "block";
+} else {
 
-        }
+    document.getElementById("error").style.display = "block";
+
+}
 
     } catch (err) {
         alert("Server error");

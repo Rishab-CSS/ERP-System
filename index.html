@@ -178,6 +178,11 @@ html, body {
                 Dashboard
                 <span>Analytics & overview</span>
             </div>
+            <div class="menu-card" id="cardAdministration" onclick="goToAdministration()">
+    Administration
+    <span>Manage users, roles and permissions</span>
+</div>
+
 
         </div>
 
@@ -214,6 +219,10 @@ html, body {
 
         function goToDashboard() {
             window.location.href = "analytics.html";
+        }
+
+        function goToAdministration() {
+            window.location.href = "administration-home.html";
         }
     </script>
 

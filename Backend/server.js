@@ -27,6 +27,10 @@ const productionRoutes = require("./routes/productionTrackingRoutes");
 
 const authRoutes = require("./routes/authRoutes");
 
+const roleRoutes = require("./routes/roleRoutes");
+
+const userRoutes = require("./routes/userRoutes");
+
 
 const app = express();
 
@@ -53,6 +57,8 @@ app.use("/api/route-cards", routeCardRoutes);
 app.use("/api/employees", employeeRoutes);
 app.use("/api/production", productionRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/roles", roleRoutes);
+app.use("/api/users", userRoutes);
 
 
 const dns = require('dns');

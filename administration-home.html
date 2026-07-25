@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0d1117">
+
+    <title>Administration</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+
+html, body {
+    overflow-x: hidden;
+}
+
+.logout-btn {
+    width: auto !important;
+    display: inline-block;
+}
+
+/* TOP BAR */
+.top-bar {
+    display: flex;
+    justify-content: flex-end;
+    padding: 15px 20px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.logout-btn {
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    border: 1px solid var(--border);
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.logout-btn:hover {
+    background: #c62828;
+}
+
+/* HERO */
+
+.hero {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.hero h1 {
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+.hero p {
+    color: #666;
+    font-size: 16px;
+}
+
+/* MENU */
+
+.menu-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+    margin-top: 40px;
+    justify-content: center;
+}
+
+.menu-card {
+    padding: 30px 40px;
+    border-radius: 4px;
+    background: var(--surface);
+    cursor: pointer;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--text-main);
+    transition: 0.3s;
+    width: 260px;
+    border: 1px solid var(--border);
+    box-shadow: 0 3px 10px rgba(0,0,0,.5);
+}
+
+.menu-card:hover {
+    background: var(--border);
+    transform: scale(1.05);
+}
+
+.menu-card span {
+    display: block;
+    margin-top: 10px;
+    font-size: 14px;
+    color: var(--text-sec);
+    font-weight: normal;
+}
+
+/* MOBILE */
+
+@media screen and (max-width:768px){
+
+    body{
+        overflow:auto;
+    }
+
+    .menu-container{
+        gap:15px;
+        margin-top:20px;
+    }
+
+    .menu-card{
+        width:100%;
+        max-width:300px;
+        padding:20px;
+        font-size:16px;
+    }
+
+    .hero h1{
+        font-size:20px;
+    }
+
+    .top-bar{
+        padding:10px 12px;
+    }
+
+    .logout-btn{
+        padding:6px 12px;
+        font-size:12px;
+        border-radius:6px;
+    }
+
+}
+
+    </style>
+
+</head>
+
+<body>
+
+
+    <div id="navbar"></div>
+
+   
+
+    <div class="container">
+
+        <div class="hero">
+
+            <h1>Administration Panel</h1>
+
+            <p>
+                Manage ERP Users, Roles & Permissions
+            </p>
+
+        </div>
+
+        <div class="menu-container">
+
+            <div class="menu-card" onclick="goToUsers()">
+
+                👥 User Management
+
+                <span>
+                    Create, edit and manage ERP users
+                </span>
+
+            </div>
+
+
+            <div class="menu-card" onclick="goToRoles()">
+
+                🛡 Roles & Permissions
+
+                <span>
+                    Create roles and assign module permissions
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+<script src="js/auth.js"></script>
+<script src="js/navbar.js"></script>
+
+<script>
+
+
+function goToUsers(){
+
+    window.location.href="administration-users.html";
+
+}
+
+function goToRoles(){
+
+    window.location.href="administration-roles.html";
+
+}
+
+</script>
+
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("/service-worker.js")
+    .then(() => console.log("Service Worker Registered"))
+    .catch(err => console.log("SW failed:", err));
+}
+</script>
+
+</body>
+
+</html>
