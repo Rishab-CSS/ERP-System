@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const Product = require("../models/Product");
 const Production = require("../models/ProductionTracking");
 const ProductProcess = require("../models/ProductProcess");
 const RouteCardSequence = require("../models/RouteCardSequence");
@@ -41,6 +42,22 @@ router.post("/create", async (req, res) => {
 
   await data.save();
   console.log("Production saved");
+
+  // =========================
+// AUTO ADD TO PRODUCTS MASTER
+// =========================
+const existingProduct = await Product.findOne({
+  partNumber: req.body.partNumber
+});
+
+if (!existingProduct) {
+  await Product.create({
+    partNumber: req.body.partNumber,
+    partName: req.body.productName
+  });
+
+  console.log("New product added to Products Master");
+}
 
   await RouteCardSequence.create({
     routeCardNo: rcNo,
@@ -194,9 +211,19 @@ router.post("/add-process/:id", async (req, res) => {
       name: p.processName
     }));
 
-    let existingProcess = await ProductProcess.findOne({
-      productId: product.productId
-    });
+const masterProduct = await Product.findOne({
+  partNumber: product.partNumber
+});
+
+if (!masterProduct) {
+  return res.status(404).json({
+    error: "Product not found in Products Master"
+  });
+}
+
+let existingProcess = await ProductProcess.findOne({
+  productId: masterProduct._id
+});
 
     if (existingProcess) {
 
@@ -219,10 +246,10 @@ router.post("/add-process/:id", async (req, res) => {
 
     } else {
 
-      await ProductProcess.create({
-        productId: product.productId,
-        processes: newProcesses
-      });
+await ProductProcess.create({
+  productId: masterProduct._id,
+  processes: newProcesses
+});
 
     }
 

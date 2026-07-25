@@ -36,6 +36,7 @@ window.onload = async function () {
 
   // Reset UI
   document.getElementById("processTable").innerHTML = "";
+  document.getElementById("partNumberInput").value = "";
   document.getElementById("productInput").value = "";
   document.getElementById("qtyInput").value = "";
 
@@ -63,26 +64,26 @@ async function createProduction() {
   btn.disabled = true;
   btn.innerText = "Saving...";
 
-  const productName = document.getElementById("productInput").value;
-  const qty = document.getElementById("qtyInput").value;
+ const partNumber = document.getElementById("partNumberInput").value.trim();
+const productName = document.getElementById("productInput").value.trim();
+const qty = document.getElementById("qtyInput").value;
 
-  if (!productName || !qty) {
-    alert("Enter product name and qty");
+if (!partNumber || !productName || !qty) {
+    alert("Enter Part Number, Part Name and Quantity");
     btn.disabled = false;
     btn.innerText = "Save";
     return;
 }
 
-  const product = await getOrCreateProduct(productName);
 
   const res = await fetch(API_URL + "/create", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      productName: product.name,
-      productId: product._id,
-      totalQty: qty
-    })
+body: JSON.stringify({
+    partNumber,
+    productName,
+    totalQty: qty
+})
   });
 
   const data = await res.json();
@@ -291,6 +292,7 @@ async function loadExistingProduction(id) {
   const res = await fetch(API_URL + "/" + id);
   const data = await res.json();
 
+  document.getElementById("partNumberInput").value = data.partNumber;
   document.getElementById("productInput").value = data.productName;
   document.getElementById("qtyInput").value = data.totalQty;
 
@@ -505,27 +507,6 @@ async function loadEmployees(select) {
   });
 }
 
-async function getOrCreateProduct(productName) {
-
-  const res = await fetch("https://erp-system-303n.onrender.com/api/products");
-  const products = await res.json();
-
-  let product = products.find(
-    p => p.name.toLowerCase() === productName.toLowerCase()
-  );
-
-  if (!product) {
-    const newRes = await fetch("https://erp-system-303n.onrender.com/api/products/add", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: productName })
-    });
-
-    product = await newRes.json();
-  }
-
-  return product;
-}
 
 function openRouteCardPanel() {
   document.getElementById("routeCardPanel").style.display = "block";

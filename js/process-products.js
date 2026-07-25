@@ -73,7 +73,7 @@ word-break:break-word;
         table.innerHTML += `
         <tr>
             <td>${i+1}</td>
-            <td>${p.name}</td>
+            <td>${p.partName}</td>
             <td>${processList}</td>
             <td>
             <div class="action-buttons">
