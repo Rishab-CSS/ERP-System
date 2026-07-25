@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:3000/api/roles";
+const API_URL = "https://erp-system-303n.onrender.com/api/roles";
 
 let editingRoleId = null;
 

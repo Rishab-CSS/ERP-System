@@ -1,5 +1,5 @@
-const API_URL = "http://localhost:3000/api/users";
-const ROLE_API = "http://localhost:3000/api/roles";
+const API_URL = "https://erp-system-303n.onrender.com/api/users";
+const ROLE_API = "https://erp-system-303n.onrender.com/api/roles";
 
 let editingUserId = null;
 
