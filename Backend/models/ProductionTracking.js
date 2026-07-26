@@ -40,7 +40,17 @@ const productionTrackingSchema = new mongoose.Schema({
     required: true
   },
 
-  customer: String,
+  customer: {
+  type: String,
+  required: true
+},
+
+customerId: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: "Customer",
+  required: true
+},
+
   poNo: String,
   routeCardNo: String,
 

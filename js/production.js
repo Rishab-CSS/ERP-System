@@ -5,6 +5,8 @@ const predefined = [
   "Lathe/01",
   "Lathe/02",
   "Drilling Machine/01",
+  "Hardness Testing Machine/01",
+  "Bend Removal Machine/01",
   "Outsourcing",
   "Inhouse"
 ];
@@ -26,10 +28,38 @@ const API_URL = "https://erp-system-303n.onrender.com/api/production";
 
 let currentProductionId = null;
 
+async function loadCustomers() {
+
+    const res = await fetch("https://erp-system-303n.onrender.com/api/customers");
+    const customers = await res.json();
+
+    const select = document.getElementById("customerInput");
+
+    select.innerHTML = `<option value="">Select Customer</option>`;
+
+    customers.forEach(c => {
+
+        select.innerHTML += `
+            <option value="${c._id}" data-name="${c.name}">
+                ${c.name}
+            </option>
+        `;
+
+    });
+
+    $('#customerInput').select2({
+        placeholder: "Select Customer",
+        width: "100%"
+    });
+
+}
+
 // =========================
 // LOAD EXISTING
 // =========================
 window.onload = async function () {
+
+  await loadCustomers();
 
   const params = new URLSearchParams(window.location.search);
   const id = params.get("id");
@@ -68,7 +98,14 @@ async function createProduction() {
 const productName = document.getElementById("productInput").value.trim();
 const qty = document.getElementById("qtyInput").value;
 
-if (!partNumber || !productName || !qty) {
+const customerSelect = document.getElementById("customerInput");
+
+const customerId = customerSelect.value;
+
+const customer =
+    customerSelect.options[customerSelect.selectedIndex].dataset.name;
+
+if (!customerId  || !partNumber || !productName || !qty) {
     alert("Enter Part Number, Part Name and Quantity");
     btn.disabled = false;
     btn.innerText = "Save";
@@ -80,6 +117,9 @@ if (!partNumber || !productName || !qty) {
     method: "POST",
     headers: { "Content-Type": "application/json" },
 body: JSON.stringify({
+
+    customer,
+    customerId,
     partNumber,
     productName,
     totalQty: qty
@@ -128,6 +168,8 @@ function addRow() {
   <option>Drilling</option>
   <option>Turning</option>
   <option>Grinding & Rolling</option>
+  <option>Phosphating</option>
+  <option>Crimping</option>
   <option>Inspection & Dispatch</option>
   <option value="OTHER">Others</option>
 </select>
@@ -295,6 +337,12 @@ async function loadExistingProduction(id) {
   document.getElementById("partNumberInput").value = data.partNumber;
   document.getElementById("productInput").value = data.productName;
   document.getElementById("qtyInput").value = data.totalQty;
+
+  $('#customerInput')
+    .val(data.customerId)
+    .trigger('change');
+
+document.getElementById("customerInput").disabled = true;
 
   document.getElementById("processSection").style.display = "block";
 
@@ -500,6 +548,11 @@ function deleteRow(btn) {
 async function loadEmployees(select) {
   const res = await fetch("https://erp-system-303n.onrender.com/api/employees");
   const data = await res.json();
+
+  console.log(data);
+console.log("FULL DATA:", data);
+console.log("Customer:", data.customer);
+console.log("Customer ID:", data.customerId);
 
   select.innerHTML = `<option>Select Operator</option>`;
   data.forEach(emp => {

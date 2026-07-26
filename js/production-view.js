@@ -163,29 +163,10 @@ async function createRouteCard(prodId, productName, qty) {
 
   document.getElementById("rcModal").style.display = "flex";
 
-  await loadCustomers();
  
 }
 
 
-async function loadCustomers(){
-  const res = await fetch("https://erp-system-303n.onrender.com/api/customers");
-  const data = await res.json();
-
-  const select = document.getElementById("rcCustomer");
-  select.innerHTML = "<option value=''>Select Customer</option>";
-
-  data.forEach(c=>{
-    select.innerHTML += `<option value="${c.name}">${c.name}</option>`;
-  });
-
-  // ✅ Initialize Select2
-  $('#rcCustomer').select2({
-    placeholder: "Select Customer",
-    width: '100%',
-    dropdownParent: $('#rcModal')
-  });
-}
 
 
 
@@ -193,36 +174,6 @@ async function loadCustomers(){
 
 
 
-document.getElementById("rcInvoiceNo").addEventListener("input", fetchInvoiceDetails);
-
-async function fetchInvoiceDetails() {
-
-  const invoiceNo = document.getElementById("rcInvoiceNo").value;
-
-  if(!invoiceNo) return;
-
-  try {
-
-    const res = await fetch(`https://erp-system-303n.onrender.com/api/invoices`);
-    const invoices = await res.json();
-
-    const invoice = invoices.find(inv => inv.invoiceNo === invoiceNo);
-
-    if(!invoice){
-      console.log("Invoice not found");
-      return;
-    }
-
-    // ✅ Fill Customer
-$('#rcCustomer').val(invoice.customerName || invoice.customer).trigger('change');
-
-
-
-
-  } catch(err){
-    console.error(err);
-  }
-}
 
 
 
@@ -236,8 +187,8 @@ async function submitRC(){
 
 
 
-  if(!customer || !invoiceNo){
-    alert("Fill all fields");
+  if(!invoiceNo){
+    alert("Enter Invoice No");
     return;
   }
 
@@ -263,6 +214,9 @@ const product = products.find(
     // =========================
     const productionRes = await fetch(`https://erp-system-303n.onrender.com/api/production/${currentRCData.prodId}`);
     const productionData = await productionRes.json();
+
+    const customer = productionData.customer;
+const customerId = productionData.customerId;
 
     // =========================
     // MAP PROCESSES (FULL DATA)
@@ -301,7 +255,10 @@ const product = products.find(
       headers: { "Content-Type": "application/json" },
 body: JSON.stringify({
     rcNo,
+
     customer,
+    customerId,
+
     product: currentRCData.productName,
     productId: product._id,
 
@@ -325,11 +282,12 @@ loadProductions();   // refresh table
   }
 
 
-  console.log("SENDING DATA:", {
-  customer,
-  poNo,
-  partNumber,
-  invoiceNo
+console.log("SENDING DATA:", {
+    customer,
+    customerId,
+    partNumber: productionData.partNumber,
+    poNo: productionData.poNo,
+    invoiceNo
 });
 
 }
