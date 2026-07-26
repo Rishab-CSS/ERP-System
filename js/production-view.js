@@ -164,7 +164,7 @@ async function createRouteCard(prodId, productName, qty) {
   document.getElementById("rcModal").style.display = "flex";
 
   await loadCustomers();
-  await loadPOs();
+ 
 }
 
 
@@ -187,38 +187,10 @@ async function loadCustomers(){
   });
 }
 
-async function loadPOs(){
-  const res = await fetch("https://erp-system-303n.onrender.com/api/purchase-orders");
-  const data = await res.json();
-
-  const list = document.getElementById("poList");
-  list.innerHTML = "";
-
-  data.forEach(po=>{
-    list.innerHTML += `<option value="${po.poNo}">`;
-  });
-}
 
 
 
-document.getElementById("rcPoNo").addEventListener("input", async function(){
 
-  const poNo = this.value;
-
-  if(!poNo) return;
-
-  // fetch all POs
-  const res = await fetch("https://erp-system-303n.onrender.com/api/purchase-orders");
-  const data = await res.json();
-
-  // find selected PO
-  const po = data.find(p => p.poNo === poNo);
-
-  if(po){
-    $('#rcCustomer').val(po.customer).trigger('change');
-  }
-
-});
 
 
 document.getElementById("rcInvoiceNo").addEventListener("input", fetchInvoiceDetails);
@@ -245,11 +217,7 @@ async function fetchInvoiceDetails() {
 $('#rcCustomer').val(invoice.customerName || invoice.customer).trigger('change');
 
 
-    // ✅ Fill PO
-    document.getElementById("rcPoNo").value = invoice.poNo;
 
-    // ✅ Handle Part Numbers
-    handleInvoiceParts(invoice.items);
 
   } catch(err){
     console.error(err);
@@ -257,37 +225,6 @@ $('#rcCustomer').val(invoice.customerName || invoice.customer).trigger('change')
 }
 
 
-function handleInvoiceParts(items){
-
-  const partField = document.getElementById("rcPartNo");
-  partField.innerHTML = "";
-
-  if(!items || items.length === 0) return;
-
-  if(items.length === 1){
-
-    const display = `${items[0].part} (${items[0].no})`;
-    const value = items[0].no;
-
-    partField.innerHTML = `<option value="${value}">${display}</option>`;
-    partField.value = value;
-
-  } 
-  else {
-
-    partField.innerHTML = `<option value="">Select Part</option>`;
-
-    items.forEach(item => {
-
-      const display = `${item.part} (${item.no})`;
-      const value = item.no;
-
-      partField.innerHTML += `
-        <option value="${value}">${display}</option>
-      `;
-    });
-  }
-}
 
 
 
@@ -295,13 +232,11 @@ function handleInvoiceParts(items){
 async function submitRC(){
 
   const customer = document.getElementById("rcCustomer").value;
-  const poNo = document.getElementById("rcPoNo").value;
-  const partNumber = document.getElementById("rcPartNo").value;
   const invoiceNo = document.getElementById("rcInvoiceNo").value;
 
 
 
-  if(!customer || !poNo || !partNumber){
+  if(!customer || !invoiceNo){
     alert("Fill all fields");
     return;
   }
@@ -314,7 +249,9 @@ async function submitRC(){
     const prodRes = await fetch("https://erp-system-303n.onrender.com/api/products");
     const products = await prodRes.json();
 
-    const product = products.find(p => p.name === currentRCData.productName);
+const product = products.find(
+    p => p.partName === currentRCData.productName
+);
 
     if(!product){
       alert("Product not found");
@@ -362,17 +299,19 @@ async function submitRC(){
     await fetch("https://erp-system-303n.onrender.com/api/route-cards/add", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        rcNo,
-        customer,
-        product: currentRCData.productName,
-        productId: product._id,
-        partNumber,
-        qty: currentRCData.qty,
-        poNo,
-        invoiceNo,
-        processes
-      })
+body: JSON.stringify({
+    rcNo,
+    customer,
+    product: currentRCData.productName,
+    productId: product._id,
+
+    partNumber: productionData.partNumber,
+    qty: productionData.totalQty,
+    poNo: productionData.poNo || "",
+
+    invoiceNo,
+    processes
+})
     });
 
 alert("Route Card Created!");
