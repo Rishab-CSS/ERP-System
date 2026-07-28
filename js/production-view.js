@@ -182,7 +182,7 @@ async function createRouteCard(prodId, productName, qty) {
 
 async function submitRC(){
 
-  const customer = document.getElementById("rcCustomer").value;
+
   const invoiceNo = document.getElementById("rcInvoiceNo").value;
 
 
@@ -283,8 +283,6 @@ loadProductions();   // refresh table
 
 
 console.log("SENDING DATA:", {
-    customer,
-    customerId,
     partNumber: productionData.partNumber,
     poNo: productionData.poNo,
     invoiceNo
