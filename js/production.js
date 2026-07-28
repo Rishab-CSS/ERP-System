@@ -188,6 +188,8 @@ function addRow() {
     <option>Lathe/01</option>
     <option>Lathe/02</option>
     <option>Drilling Machine/01</option>
+    <option>"Hardness Testing Machine/01"</option
+    <option>"Bend Removal Machine/01"</option>
     <option>Outsourcing</option>
     <option>Inhouse</option>
     <option value="OTHER">Others</option>
