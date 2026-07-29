@@ -162,7 +162,7 @@ let editingPOId = localStorage.getItem("editPOId");
         let pendingQty;
 
         // Existing PO
-        if(editingPO){
+        if(editingPOId){
 
             pendingQty = Number(
                 row.querySelector(".pendingQty").value
@@ -211,7 +211,7 @@ let editingPOId = localStorage.getItem("editPOId");
     if(editingPOId){
 
         // UPDATE
-        await fetch(`https://erp-system-303n.onrender.com/api/purchase-orders/${editingPO._id}`, {
+        await fetch(`https://erp-system-303n.onrender.com/api/purchase-orders/${editingPOId._id}`, {
 
             method: "PUT",
 

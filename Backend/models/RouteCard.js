@@ -15,6 +15,13 @@ const processSchema = new mongoose.Schema({
 const routeCardSchema = new mongoose.Schema({
 
     rcNo: String,
+
+     productionId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Production"
+    },
+
+    
     customer: String,
 
     product: String,   // ✅ ADD THIS

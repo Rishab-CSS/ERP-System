@@ -75,7 +75,7 @@ async function loadProductions() {
 
 data.forEach(prod => {
   const statusText = getProductionViewStatus(prod);
-  const existingRC = routeCards.find(rc => rc.product === prod.productName);
+  const existingRC = routeCards.find(rc => rc.productionId === prod._id);
 
   table.innerHTML += `
     <tr>
@@ -255,6 +255,8 @@ const customerId = productionData.customerId;
       headers: { "Content-Type": "application/json" },
 body: JSON.stringify({
     rcNo,
+
+    productionId: currentRCData.prodId,
 
     customer,
     customerId,
